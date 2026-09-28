@@ -94,3 +94,19 @@ int main() {
     printf("\n");
     return 0;
 }
+# DSA Assignment - K-Way Merge using Min Heap and Pairwise Merging
+
+## Project Structure
+- **README.md**: Contains problem statement, documentation, and implementation code.
+- **ANALYSIS.md**: Contains the performance analysis, time complexity, and comparison between Min Heap and Pairwise Merging.
+
+## Data Structures Used
+- **Min Heap**: Used for efficient K-Way merging by keeping track of the minimum elements from each sorted list.
+- **Arrays**: Used to store the input transaction lists and the final merged output.
+
+## How to Build and Run
+1. Clone or download the repository.
+2. Open a terminal/command prompt in the project folder.
+3. Compile the C program using GCC:
+   ```bash
+   gcc minheap.c -o minheap
