@@ -125,8 +125,11 @@ int main() {
 - **Step 3:** Insert the next element from the same list into the heap and heapify.
 - **Step 4:** Repeat until all elements are processed.
 
+
+
 ## Comparison Table / Performance Analysis
+
 | Approach | Heap Size | Time Complexity | Space Complexity |
 | :--- | :--- | :--- | :--- |
-| **Min Heap K-Way Merge** | $K$ | $O(N \log K)$ | $O(K)$ |
-| **Pairwise Merging** | None (0) | $O(N \times K)$ | $O(N)$ |
+| **Min Heap K-Way Merge** | K | O(N log K) | O(K) |
+| **Pairwise Merging** | None (0) | O(N * K) | O(N) |
