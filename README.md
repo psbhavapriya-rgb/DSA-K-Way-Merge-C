@@ -94,6 +94,11 @@ int main() {
     printf("\n");
     return 0;
 }
+
+
+
+
+
 # DSA Assignment - K-Way Merge using Min Heap and Pairwise Merging
 
 ## Project Structure
@@ -110,3 +115,18 @@ int main() {
 3. Compile the C program using GCC:
    ```bash
    gcc minheap.c -o minheap
+
+
+
+
+## Trace Table & Execution Steps
+- **Step 1:** Initialize Min Heap with the first element of each of the $K$ sorted lists.
+- **Step 2:** Extract the minimum element from the heap and store it in the output array.
+- **Step 3:** Insert the next element from the same list into the heap and heapify.
+- **Step 4:** Repeat until all elements are processed.
+
+## Comparison Table / Performance Analysis
+| Approach | Heap Size | Time Complexity | Space Complexity |
+| :--- | :--- | :--- | :--- |
+| **Min Heap K-Way Merge** | $K$ | $O(N \log K)$ | $O(K)$ |
+| **Pairwise Merging** | None (0) | $O(N \times K)$ | $O(N)$ |
