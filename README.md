@@ -10,91 +10,85 @@ A financial system receives three already sorted transaction lists:
 ## C Program Implementation (Min Heap K-Way Merge)
 
 ```c
+
 #include <stdio.h>
-#include <stdlib.h>
-
-struct MinHeapNode {
-    int element;
-    int i;
-    int j;
-};
-
-void swap(struct MinHeapNode* a, struct MinHeapNode* b) {
-    struct MinHeapNode temp = *a;
+#define K 3
+#define SIZE 4 #define TOTAL (K * SIZE)
+typedef struct {     int value;     int list;     int index; } HeapNode;
+typedef struct {     HeapNode arr[K];     int size; } MinHeap;
+void swap(HeapNode *a, HeapNode *b) {
+    HeapNode temp = *a;
     *a = *b;
-    *b = temp;
+    *b = temp; }
+void heapifyDown(MinHeap *heap, int i, int *comparisons) {     while (1)     {         int smallest = i;         int left = 2 * i + 1;         int right = 2 * i + 2;
+        if (left < heap->size)         {             (*comparisons)++;             if (heap->arr[left].value < heap->arr[smallest].value)                 smallest = left;         }
+        if (right < heap->size)         {             (*comparisons)++;
+            if (heap->arr[right].value < heap->arr[smallest].value)                 smallest = right;         }
+        if (smallest == i)             break;
+        swap(&heap->arr[i], &heap->arr[smallest]);         i = smallest;     } }
+void insertHeap(MinHeap *heap, HeapNode node) {     int i = heap->size;     heap->arr[i] = node;     heap->size++;
+    while (i > 0)     {
+        int parent = (i - 1) / 2;
+        if (heap->arr[parent].value <= heap->arr[i].value)             break;
+        swap(&heap->arr[parent], &heap->arr[i]);         i = parent;     }
 }
-
-void minHeapify(struct MinHeapNode arr[], int i, int heapSize) {
-    int smallest = i;
-    int left = 2 * i + 1;
-    int right = 2 * i + 2;
-
-    if (left < heapSize && arr[left].element < arr[smallest].element)
-        smallest = left;
-
-    if (right < heapSize && arr[right].element < arr[smallest].element)
-        smallest = right;
-
-    if (smallest != i) {
-        swap(&arr[i], &arr[smallest]);
-        minHeapify(arr, smallest, heapSize);
-    }
-}
-
-void kWayMerge(int arr[][4], int k, int n, int output[]) {
-    struct MinHeapNode* harr = (struct MinHeapNode*)malloc(k * sizeof(struct MinHeapNode));
-    int initial_heap_size = 0;
-
-    for (int i = 0; i < k; i++) {
-        if (n > 0) {
-            harr[i].element = arr[i][0];
-            harr[i].i = i;
-            harr[i].j = 1;
-            initial_heap_size++;
-        }
-    }
-
-    for (int i = (initial_heap_size - 1) / 2; i >= 0; i--)
-        minHeapify(harr, i, initial_heap_size);
-
-    int count = 0;
-    while (initial_heap_size > 0) {
-        struct MinHeapNode root = harr[0];
-        output[count++] = root.element;
-
-        if (root.j < n) {
-            harr[0].element = arr[root.i][root.j];
-            harr[0].j = root.j + 1;
-        } else {
-            harr[0] = harr[initial_heap_size - 1];
-            initial_heap_size--;
-        }
-        minHeapify(harr, 0, initial_heap_size);
-    }
-    free(harr);
-}
-
-int main() {
-    int k = 3;
-    int n = 4;
-    int L[3][4] = {
-        {10, 30, 50, 70},
+HeapNode removeMin(MinHeap *heap, int *comparisons)
+{     HeapNode minNode = heap->arr[0];
+    heap->size--;
+    if (heap->size > 0)     {         heap->arr[0] = heap->arr[heap->size];         heapifyDown(heap, 0, comparisons);     }
+    return minNode; }
+void printHeap(MinHeap *heap) {     printf("[ ");
+    for (int i = 0; i < heap->size; i++)         printf("%d ", heap->arr[i].value);
+    printf("]"); }
+void kWayMerge(int lists[K][SIZE]) {     MinHeap heap;     heap.size = 0;
+    int comparisons = 0;     int output[TOTAL];     int count = 0;
+    for (int i = 0; i < K; i++)     {         HeapNode node;
+        node.value = lists[i][0];         node.list = i;         node.index = 0;
+        insertHeap(&heap, node);     }
+    printf("\n====================================\n");     printf(" K-WAY MERGE USING MIN HEAP\n");     printf("====================================\n");
+    printf("Initial Heap: ");     printHeap(&heap);     printf("\n\n");
+    while (heap.size > 0)     {         HeapNode minNode = removeMin(&heap, &comparisons);
+        output[count] = minNode.value;         count++;
+        if (minNode.index + 1 < SIZE)         {             HeapNode nextNode;
+            nextNode.list = minNode.list;             nextNode.index = minNode.index + 1;             nextNode.value = lists[minNode.list][nextNode.index];
+            insertHeap(&heap, nextNode);         }
+        printf("Step %2d : Deleted %d\tHeap = ",                count, minNode.value);         printHeap(&heap);         printf("\n");     }
+    printf("\nFinal K-Way Output:\n");     for (int i = 0; i < TOTAL; i++)         printf("%d ", output[i]);
+    printf("\n");     printf("Heap Comparisons = %d\n", comparisons); }
+int main() {     int lists[K][SIZE] = {         {10, 30, 50, 70},
         {20, 40, 60, 80},
-        {15, 35, 55, 75}
-    };
-
-    int output[12];
-    kWayMerge(L, k, n, output);
-
-    printf("--- K-Way Merge using Min Heap ---\nMerged Output: ");
-    for (int i = 0; i < k * n; i++) {
-        printf("%d ", output[i]);
-    }
-    printf("\n");
+        {15, 35, 55, 75}     };
+    printf("====================================\n");     printf(" SORTED TRANSACTION LISTS\n");     printf("====================================\n");
+    printf("L1 : 10 30 50 70\n");     printf("L2 : 20 40 60 80\n");     printf("L3 : 15 35 55 75\n");
+    kWayMerge(lists);
     return 0;
 }
-
+OUTPUT
+====================================
+ SORTED TRANSACTION LISTS
+====================================
+L1 : 10 30 50 70
+L2 : 20 40 60 80
+L3 : 15 35 55 75
+====================================
+ K-WAY MERGE USING MIN HEAP
+====================================
+Initial Heap: [ 10 20 15 ]
+Step  1 : Deleted 10    Heap = [ 15 20 30 ]
+Step  2 : Deleted 15    Heap = [ 20 30 35 ]
+Step  3 : Deleted 20    Heap = [ 30 35 40 ]
+Step  4 : Deleted 30    Heap = [ 35 40 50 ]
+Step  5 : Deleted 35    Heap = [ 40 50 55 ]
+Step  6 : Deleted 40    Heap = [ 50 55 60 ]
+Step  7 : Deleted 50    Heap = [ 55 60 70 ]
+Step  8 : Deleted 55    Heap = [ 60 70 75 ]
+Step  9 : Deleted 60    Heap = [ 70 75 80 ]
+Step 10 : Deleted 70    Heap = [ 75 80 ]
+Step 11 : Deleted 75    Heap = [ 80 ]
+Step 12 : Deleted 80    Heap = [ ]
+Final K-Way Output:
+10 15 20 30 35 40 50 55 60 70 75 80
+Heap Comparisons = 18
 
 
 
